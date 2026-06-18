@@ -1,5 +1,8 @@
-Django>=5.0,<5.99
-psycopg2-binary>=2.9
-python-decouple>=3.8
-redis>=5.0
-django-redis>=5.4
+asgiref==3.11.1
+Django==5.2.15
+django-redis==7.0.0
+pillow==12.2.0
+psycopg2-binary==2.9.12
+python-decouple==3.8
+redis==8.0.0
+sqlparse==0.5.5
