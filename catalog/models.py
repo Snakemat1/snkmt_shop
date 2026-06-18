@@ -1,4 +1,5 @@
 from django.db import models
+import random
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -68,9 +69,20 @@ class ProductVariant(models.Model):
         related_name="variants"
     )
     attribute_values = models.ManyToManyField(AttributeValue)
-    sku = models.CharField(max_length=50, unique=True)
+    sku = models.CharField(max_length=50, unique=True, blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     stock = models.PositiveIntegerField(default=0)
+
+    def generate_sku(self):
+        while True:
+            sku = str(random.randint(10000000, 99999999))
+            if not ProductVariant.objects.filter(sku=sku).exists():
+                return sku
+            
+    def save(self, *args, **kwargs):
+        if not self.sku:
+            self.sku = self.generate_sku()
+        super().save(*args, **kwargs)
     
     def __str__(self):
         values =  ", ".join(str(v) for v in self.attribute_values.all())
@@ -78,7 +90,7 @@ class ProductVariant(models.Model):
 
     def get_price(self):
         return self.price if self.price is not None else self.product.base_price
-    
+        
     class Meta:
         ordering = ["product__name"]
 

@@ -1,0 +1,59 @@
+{% extends "catalog/base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+
+    <div class="col-md-5">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+            <div class="bg-secondary rounded" style="height:400px;"></div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-7">
+        <h1>{{ product.name }}</h1>
+        <p class="text-muted">{{ product.category }}</p>
+        <h3 class="text-primary mb-4">
+            <p>{{ product.base_price }}₽</p>
+        </h3>
+
+        <p>{{ product.description }}</p>
+
+        <h5 class="mt-4">Варианты</h5>
+        {% for variant in product.variants.all %}
+            <div class="border rounded p-3 mb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Артикул:</strong>
+                        <p>{{ variant.sku }}</p>
+                        <br>
+                        <strong>Атрибуты:</strong>
+                        <p>{{ variant.attribute_values.all|join:", " }}</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold text-primary">
+                            <p>{{ variant.get_price }}₽</p>
+                        </div>
+                        <small class="text-muted">
+                            {% if variant.stock > 0 %}
+                                <p>В наличии: {{ variant.stock }} шт.</p>
+                            {% else %}
+                                <p>Нет в наличии</p>
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        
+        {% empty %}
+            <p>Нет доступных вариантов</p>
+
+        {% endfor %}
+        <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-secondary mt-3">← Назад в каталог</a>
+    </div>
+
+</div>
+{% endblock %}
