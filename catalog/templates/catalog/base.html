@@ -175,6 +175,10 @@
         <div class="container">
             <a class="navbar-brand" href="{% url 'catalog:product_list' %}">Магазин</a>
             <div class="d-flex align-items-center gap-3 ms-auto">
+                <a class="nav-link text-light d-inline" href="{% url 'cart:detail' %}">
+                    Корзина
+                    <span class="badge bg-accent" id="cart-counter" style="background: var(--color-accent);">{{ request.cart_total_quantity|default:0 }}</span>
+                </a>
                 {% if user.is_authenticated %}
                     <a class="nav-link text-light d-inline" href="{% url 'users:profile' %}">{{ user.username }}</a>
                     <form method="post" action="{% url 'users:logout' %}" class="d-inline m-0">

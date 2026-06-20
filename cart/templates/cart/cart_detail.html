@@ -1,0 +1,63 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4" style="font-family: 'Fraunces', serif;">Корзина</h1>
+
+    {% if cart.items.all %}
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Цена</th>
+                    <th style="width: 140px;">Количество</th>
+                    <th>Сумма</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="cart-items-body">
+                {% for item in cart.items.all %}
+                <tr data-item-id="{{ item.id }}">
+                    <td>
+                        <div class="fw-semibold">{{ item.variant.product.name }}</div>
+                        <div class="text-muted small">
+                            {% for av in item.variant.attribute_values.all %}{{ av }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                        </div>
+                    </td>
+                    <td>{{ item.variant.get_price }} ₽</td>
+                    <td>
+                        <input
+                            type="number"
+                            min="0"
+                            value="{{ item.quantity }}"
+                            class="form-control cart-qty-input"
+                            data-item-id="{{ item.id }}"
+                        >
+                    </td>
+                    <td class="cart-item-total" data-item-id="{{ item.id }}">{{ item.total_price }} ₽</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-danger cart-remove-btn" data-item-id="{{ item.id }}">
+                            Удалить
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <div class="text-end">
+            <div class="fs-5">Итого: <span id="cart-total-price" class="fw-bold">{{ cart.total_price }}</span> ₽</div>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-muted" id="cart-empty-message">Ваша корзина пуста.</p>
+    {% endif %}
+</div>
+
+<script src="{% static 'cart/cart.js' %}"></script>
+{% endblock %}
